@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mount Everest - The Art of Mountaineering</title>
+    <link rel="stylesheet" type="text/css" href="css/myStyles.css">
+    <style>
+        .hangman-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .word {
+            font-size: 2em;
+            letter-spacing: 0.5em;
+            margin-bottom: 10px;
+        }
+        .letters {
+            margin: 10px 0;
+        }
+        .letters button {
+            font-size: 1em;
+            margin: 5px;
+            padding: 10px;
+        }
+        .message {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        .reset-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="common header">
+        <h1>The Art of Mountaineering</h1>
+    </div>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="history.html">History</a>
+        <a href="everest.html">Mount Everest</a>
+        <a href="aboutme.html">About Me</a>
+        <a href="extraAI.html">Extra AI App</a>
+        <a href="home.html">My Travel Page</a>
+    </nav>
+
+    <div class="body mainbody">
+        <br>
+        <h2 style="text-align: center;">Mountaineering Hangman Game</h2>
+        <br><br>
+        <div class="hangman-container">
+            <div id="word" class="word">_ _ _ _ _</div>
+            <div id="letters" class="letters"></div>
+            <div id="message" class="message"></div>
+            <button id="resetButton" class="reset-button">Reset Game</button>
+        </div>
+    </div>
+
+    <script>
+        const words = ["EVEREST", "MOUNTAIN", "CLIMB", "SUMMIT", "ALTITUDE", "CLIMBER", "SNOW", "ICE", "PEAK"];
+        let chosenWord;
+        let displayedWord;
+        let attemptsLeft;
+
+        const wordElement = document.getElementById("word");
+        const lettersElement = document.getElementById("letters");
+        const messageElement = document.getElementById("message");
+        const resetButton = document.getElementById("resetButton");
+
+        function initializeGame() {
+            chosenWord = words[Math.floor(Math.random() * words.length)];
+            displayedWord = Array(chosenWord.length).fill("_");
+            attemptsLeft = 6;
+            messageElement.textContent = "";
+            updateWordDisplay();
+            createLetterButtons();
+        }
+
+        function updateWordDisplay() {
+            wordElement.textContent = displayedWord.join(" ");
+        }
+
+        function createLetterButtons() {
+            lettersElement.innerHTML = "";
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            for (let letter of alphabet) {
+                const button = document.createElement("button");
+                button.textContent = letter;
+                button.addEventListener("click", () => handleGuess(letter, button));
+                lettersElement.appendChild(button);
+            }
+        }
+
+        function handleGuess(letter, button) {
+            button.disabled = true;
+            if (chosenWord.includes(letter)) {
+                for (let i = 0; i < chosenWord.length; i++) {
+                    if (chosenWord[i] === letter) {
+                        displayedWord[i] = letter;
+                    }
+                }
+                updateWordDisplay();
+                if (!displayedWord.includes("_")) {
+                    messageElement.textContent = "Congratulations! You guessed the word!";
+                    endGame();
+                }
+            } else {
+                attemptsLeft--;
+                if (attemptsLeft === 0) {
+                    messageElement.textContent = `Game Over! The word was: ${chosenWord}`;
+                    endGame();
+                } else {
+                    messageElement.textContent = `Wrong guess! Attempts left: ${attemptsLeft}`;
+                }
+            }
+        }
+
+        function endGame() {
+            const buttons = lettersElement.querySelectorAll("button");
+            buttons.forEach(button => button.disabled = true);
+        }
+
+        resetButton.addEventListener("click", initializeGame);
+
+        initializeGame();
+    </script>
+</body>
+</html>
